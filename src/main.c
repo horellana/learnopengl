@@ -22,12 +22,15 @@ int read_file(char *file_path, char *output, size_t output_size) {
   size_t bytes_read = fread(output, 1, output_size - 1, file);
 
   if (ferror(file)) {
+    fclose(file);
     return -1;
   }
 
   output[bytes_read] = '\0';
 
   fclose(file);
+
+  return 0;
 }
 
 unsigned int load_shader(char *input, GLenum shader_type) {
@@ -56,7 +59,11 @@ unsigned int load_shader(char *input, GLenum shader_type) {
   if (!success) {
     glGetShaderInfoLog(shader, 512, NULL, infoLog);
     fprintf(stderr, "%s\n", infoLog);
+    glDeleteShader(shader);
+    return 0;
   }
+
+  return shader;
 }
 
 unsigned int create_shader_program(unsigned int *shaders, size_t shaders_size) {
