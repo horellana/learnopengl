@@ -40,7 +40,13 @@ unsigned int load_shader(char *input, GLenum shader_type) {
 
   unsigned int shader = glCreateShader(shader_type);
 
-  glShaderSource(shader, 1, (const GLchar* const*)&shader_source, NULL);
+  if (shader == 0) {
+    fprintf(stderr, "Failed to create shader\n");
+  }
+
+  const char *src = shader_source;
+  glShaderSource(shader, 1, &src, NULL);
+
   glCompileShader(shader);
 
   int  success;
